@@ -375,6 +375,7 @@ export interface OrderService {
      * @memberof OrderService
      */
     mastersByMasterId?: Masters;
+
     /**
      * 
      * @type {string}
@@ -438,7 +439,7 @@ export interface Staff {
      * @type {MovingInformation}
      * @memberof Staff
      */
-    movingInformationByMovingInformation?: MovingInformation;
+    movingInformation?: Array<MovingInformation>;
     /**
      * 
      * @type {string}

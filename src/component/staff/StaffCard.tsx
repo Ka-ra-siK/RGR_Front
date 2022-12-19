@@ -27,8 +27,7 @@ export const StaffCard: React.FC<Props> = ({ client, onEdit, onDelete }) => {
                     <Property title="День рождения:" value={client.birthDate} />
                     <Property title="Должность:" value={client.position} />
                     <Property title="Зарплата:" value={client.salary} />
-
-                    {/*<Property title="Услуги:" value={<span>{client.order?.map((order, idx) => <span key={order.id} className="client-card__order">{order.serviceName}{`${idx !== (client.order?.length ?? 0) - 1 ? ',' : ''} `}</span>)}</span>} />*/}
+                    <Property title="Информация о пеермещении:" value={<span>{client.movingInformation?.map((order, idx) => <span key={order.id} className="client-card__order">{order.transferReason}{`${idx !== (client.movingInformation?.length ?? 0) - 1 ? ',' : ''} `}</span>)}</span>} />
                 </div>
             }
             <div className="staff-card__controls">

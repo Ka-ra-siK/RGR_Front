@@ -3,6 +3,8 @@ import {movingInformationApi} from "../../api/MovingInformationApi";
 import {useEntities} from "../../util/useEntities";
 import React, {useState} from "react";
 import {Property} from "../Property";
+import {staffApi} from "../../api/StaffApi";
+import {StaffCard} from "./StaffCard";
 
 interface Props {
     stafff?: Staff
@@ -20,10 +22,9 @@ export const StafffForm: React.FC<Props> = ({ stafff, onSubmit }) => {
     const [birthDate, setBirthDate] = useState(stafff?.birthDate ?? '')
     const [position, setPosition] = useState(stafff?.position ?? '')
     const [salary, setSalary] = useState<number>(stafff?.salary ?? 0)
-    //const [selectMovingInformation, setSelectMovingInformation] = useState<string[]>(stafff?.movingInformationByMovingInformation?.map(o => o.id?.toString() ?? '') ?? [])
 
-    // const [movingInformation, setMovingInformation] = useState<string[]>(movingInformationFromDb.filter(ac => (stafff?.movingInformation.findIndex(fa => fa._id.equals(ac._id ?? new Mongo.ObjectID)) ?? -1) !== -1).map(ac => ac._id?.toHexString() ?? '') ?? [])
-    //
+    const [selectMovingInformation, setSelectMovingInformation] = useState<string[]>(stafff?.movingInformation?.map(o => o.id?.toString() ?? '') ?? [])
+
 
     const onClick = () => {
         if (surname === '') return
@@ -35,7 +36,7 @@ export const StafffForm: React.FC<Props> = ({ stafff, onSubmit }) => {
             birthDate,
             position,
             salary,
-            //movingInformation: movingInformation.map(mi => ({ _id: new Mongo.ObjectID(mi) }))
+            movingInformation: movingInformations?.filter(os => !!selectMovingInformation.find(so => so === os.id?.toString() ?? '-1'))
         })
         setSurname('')
         setName('')
@@ -44,7 +45,7 @@ export const StafffForm: React.FC<Props> = ({ stafff, onSubmit }) => {
         setBirthDate('')
         setPosition('')
         setSalary(0)
-       // setMovingInformation([])
+        setSelectMovingInformation([])
     }
 
     return (
@@ -55,12 +56,14 @@ export const StafffForm: React.FC<Props> = ({ stafff, onSubmit }) => {
             <Property title="Адрес:" value={<input type="text" value={address} onChange={e => setAddress(e.target.value)} />} />
             <Property title="День рождения:" value={<input type="text" value={birthDate} onChange={e => setBirthDate(e.target.value)} />} />
             <Property title="Зарплата:" value={<input type="number" value={salary} onChange={e => setSalary(Number(e.target.value))} />} />
-
-            {/*<Property title="Инфо о перемещении:" value={*/}
-            {/*    <select multiple value={movingInformation} onChange={e => setMovingInformation(Array.from(e.target.selectedOptions, option => option.value))}>*/}
-            {/*        {movingInformationFromDb.map(mi => <option key={mi._id?.toHexString()} value={mi._id?.toHexString()}>{mi.transferReason}</option>)}*/}
-            {/*    </select>*/}
-            {/*} />*/}
+            
+            <Property title="Информация о передвижении:">
+                <select multiple value={selectMovingInformation}
+                        onChange={e => setSelectMovingInformation(Array.from(e.target.selectedOptions, option => option.value))}>
+                    {movingInformations?.map(m => <option key={m.id}
+                                                       value={m.id}>{m.transferReason}</option>)}
+                </select>
+            </Property>
             <button className="button button_green" onClick={onClick}>Ок</button>
         </div>
     )

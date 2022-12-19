@@ -9,39 +9,40 @@ interface Props {
     onSubmit: (orderService: OrderService) => void
 }
 
-// name: string
-// price: Number
 export const OrderServiceForm: React.FC<Props> = ({orderService, onSubmit}) => {
 
     const [masters] = useEntities(masterApi)
-    //const staffFromDb = useTracker(() => StafffCollection.find({}).fetch())
+
+    const [selectMasters, setSelectMasters] = useState<string[]>(masters?.map(o=> o.staffByStaffId?.id?.toString() ?? '') ?? [])
 
     const [serviceName, setName] = useState(orderService?.serviceName ?? '')
     const [servicePrice, setPrice] = useState<number>(orderService?.servicePrice ?? 0)
-   // const [selectMasters, setSelectMasters] = useState<string[]>(orderService?.mastersByMasterId?.id?.map(o => o.id?.toString() ?? '') ?? [])
-
 
 
     const onClick = () => {
         if (serviceName === '') return
         onSubmit({
+            mastersByMasterId : masters?.find(ma => !!selectMasters.find(am => am === ma.id?.toString() ?? '-1')),
             serviceName,
-            servicePrice
+            servicePrice,
         })
+        setSelectMasters([])
         setName('')
         setPrice(0)
     }
     return (
         <div className="order-form">
-            <Property title="Услуга:" value={<input type="text" value={serviceName} onChange={e => setName(e.target.value)} />} />
-            <Property title="Стоимость:" value={<input type="number" value={servicePrice} onChange={e => setPrice(Number(e.target.value))} />} />
-            {/*<Property title="Мастер:" value={*/}
-            {/*    <select multiple value={master}*/}
-            {/*            onChange={e => setMaster(Array.from(e.target.selectedOptions, option => option.value))}>*/}
-            {/*        {masterFromDb.map(m => <option key={m._id?.toHexString()}*/}
-            {/*                                       value={m._id?.toHexString()}>{m.name}</option>)}*/}
-            {/*    </select>*/}
-            {/*}/>*/}
+            <Property title="Услуга:"
+                      value={<input type="text" value={serviceName} onChange={e => setName(e.target.value)}/>}/>
+            <Property title="Стоимость:" value={<input type="number" value={servicePrice}
+                                                       onChange={e => setPrice(Number(e.target.value))}/>}/>
+            <Property title="Мастера:">
+                <select multiple value={serviceName}
+                        onChange={e => setSelectMasters(Array.from(e.target.selectedOptions, option => option.value))}>
+                    {masters?.map(m => <option key={m.id}
+                                                       value={m.id}>{m.staffByStaffId?.surname}</option>)}
+                </select>
+            </Property>
             <button className="button button_green" onClick={onClick}>Ок</button>
         </div>
     )

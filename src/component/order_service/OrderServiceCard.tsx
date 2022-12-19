@@ -2,6 +2,8 @@ import {OrderService} from "../../api/base";
 import React, {useState} from "react";
 import {OrderServiceForm} from "./OrderServiceForm";
 import {Property} from "../Property";
+import {useEntities} from "../../util/useEntities";
+import {masterApi} from "../../api/MastersApi";
 
 interface Props {
     orderService: OrderService
@@ -11,6 +13,7 @@ interface Props {
 
 export const OrderServiceCard: React.FC<Props> = ({ orderService, onEdit, onDelete }) => {
     const [isEdit, setIsEdit] = useState(false)
+    const [masters] = useEntities(masterApi)
 
 
     return (
@@ -22,8 +25,7 @@ export const OrderServiceCard: React.FC<Props> = ({ orderService, onEdit, onDele
 
                     <Property title="Услуга:" value={orderService.serviceName} />
                     <Property title="Стоимость:" value={orderService.servicePrice} />
-
-                    {/*<Property title="Услуги:" value={<span>{client.order?.map((order, idx) => <span key={order.id} className="client-card__order">{order.serviceName}{`${idx !== (client.order?.length ?? 0) - 1 ? ',' : ''} `}</span>)}</span>} />*/}
+                    <Property title="Мастер:" value={orderService.mastersByMasterId?.staffByStaffId?.surname} />
                 </div>
             }
             <div className="staff-card__controls">
